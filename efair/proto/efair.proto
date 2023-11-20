@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package efair.rpc;
+
+service EFairService {
+  // load model
+  rpc LoadModel(LoadModelRequest) returns (LoadModelResponse) {}
+
+  // Create entity request
+  rpc CreateEntity(CreateEntityRequest) returns (CreateEntityResponse) {}
+
+  // Set entity priority
+  rpc SetEntityPriority(SetEntityPriorityRequest) returns (SetEntityPriorityResponse) {}
+
+  // Infer
+  rpc Infer(InferRequest) returns (InferResponse) {}
+}
+
+message LoadModelRequest {
+  string model_path = 1;
+  string model_profile_path = 2;
+  uint64 eid = 3;
+  string frequency = 4;
+}
+
+message LoadModelResponse {
+  bool success = 1;
+  uint64 mid = 2;
+}
+
+message CreateEntityRequest {
+  int64 priority = 1;
+}
+
+message CreateEntityResponse {
+  bool success = 1;
+  uint64 eid = 2;
+}
+
+message SetEntityPriorityRequest {
+  uint64 eid = 1;
+  int64 priority = 2;
+}
+
+message SetEntityPriorityResponse {
+  bool success = 1;
+}
+
+message InferRequest {
+  uint64 mid = 1;
+}
+
+message InferResponse {
+  bool success = 1;
+  uint64 tid = 2;
+}
