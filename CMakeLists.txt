@@ -3,6 +3,10 @@ project(eFair)
 
 set(CMAKE_CXX_STANDARD 17)
 
+# Add TVM build
+include("${CMAKE_SOURCE_DIR}/cmake/config.cmake")
+add_subdirectory("3rdparty/tvm")
+
 add_definitions(-DMODEL_DIR="${CMAKE_CURRENT_LIST_DIR}/models")
 add_definitions(-DSAMPLE_DIR="${CMAKE_CURRENT_LIST_DIR}/samples")
 add_definitions(-DSERVER_ADDRESS="0.0.0.0:10086")
@@ -26,9 +30,7 @@ include("${CMAKE_SOURCE_DIR}/cmake/grpc.cmake")
 #    message(FATAL_ERROR, "Environment variable TVM_ROOT is not defined. ")
 #endif ()
 
-# TODO: replace this with environment variables
-#set(TVM_ROOT $ENV{TVM_ROOT})
-set(TVM_ROOT "$ENV{HOME}/tvm")
+set(TVM_ROOT "3rdparty/tvm")
 
 include_directories("${TVM_ROOT}/include")
 include_directories("${TVM_ROOT}/3rdparty/dmlc-core/include")
@@ -36,13 +38,13 @@ include_directories("${TVM_ROOT}/3rdparty/dlpack/include")
 
 
 
-add_library(libtvm_runtime SHARED IMPORTED GLOBAL)
-
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set_target_properties(libtvm_runtime PROPERTIES IMPORTED_LOCATION "${TVM_ROOT}/build/libtvm_runtime.dylib")
-else()
-    set_target_properties(libtvm_runtime PROPERTIES IMPORTED_LOCATION "${TVM_ROOT}/build/libtvm_runtime.so")
-endif ()
+#add_library(libtvm_runtime SHARED IMPORTED GLOBAL)
+#
+#if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+#    set_target_properties(libtvm_runtime PROPERTIES IMPORTED_LOCATION "${TVM_ROOT}/build/libtvm_runtime.dylib")
+#else()
+#    set_target_properties(libtvm_runtime PROPERTIES IMPORTED_LOCATION "${TVM_ROOT}/build/libtvm_runtime.so")
+#endif ()
 
 
 include_directories("${PROJECT_SOURCE_DIR}/efair")
@@ -51,7 +53,7 @@ include_directories("${Boost_INCLUDE_DIRS}")
 
 add_library(libefair_executor ${efair_executor_src})
 target_link_libraries(libefair_executor
-        libtvm_runtime
+        tvm_runtime
         glog::glog          # Remove this to avoid re-define warning
         "${Boost_LIBRARIES}"
         )

@@ -50,14 +50,14 @@ void shutdown_server(){
 
 int main(int argc, char **argv){
     if (argc < 4) {
-        std::cerr << "Need as least 3 arguments to run server: [quantum_size] [alpha] [device] " << std::endl;
+        std::cerr << "Need as least 3 arguments to run server: [quantum_size] [phi] [device] " << std::endl;
         std::exit(1);
     }
 
     std::signal(SIGINT, interrupt_handler);
 
     auto quantum_size = static_cast<efair::MicroSeconds>(std::atoi(argv[1]));
-    auto alpha = std::atof(argv[2]);
+    auto phi = std::atof(argv[2]);
 
     tvm::Device dev;
     if (std::strcmp(argv[3], "gpu") == 0){
@@ -68,7 +68,7 @@ int main(int argc, char **argv){
         dev = {kDLCPU};
     }
 
-    scheduler = new efair::scheduler::EFairScheduler(quantum_size, alpha, dev);
+    scheduler = new efair::scheduler::EFairScheduler(quantum_size, phi, dev);
     server = new efair::rpc::EFairServer(SERVER_ADDRESS, scheduler);
 
     std::thread t(shutdown_server);
